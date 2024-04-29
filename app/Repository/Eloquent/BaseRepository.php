@@ -14,7 +14,7 @@ class BaseRepository implements EloquentRepositoryInterface
         $this->model = $model;
     }
 
-    public function find($id):? Model
+    public function find($id): ?Model
     {
         return $this->model->find($id);
     }
@@ -34,8 +34,13 @@ class BaseRepository implements EloquentRepositoryInterface
         return $this->model->find($id)->delete();
     }
 
-    public function where($x,$y)
+    public function where($x, $y)
     {
-        return $this->model->where($x,$y)->get();
+        return $this->model->where($x, $y)->get();
+    }
+
+    public function all()
+    {
+        return $this->model->orderBy('created_at', 'desc')->get();
     }
 }

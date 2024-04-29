@@ -2,9 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Exceptions\ValidatorException;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
 
-class StoreProductRequest extends FormRequest
+class UserRegisterRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,9 +24,10 @@ class StoreProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string',
-            'price' => 'required|numeric',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'name' => 'required|string|max:20',
+            'password' => 'required|min:8',
+            'type' => 'required|in:normal,silver',
         ];
     }
+
 }

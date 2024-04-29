@@ -8,12 +8,9 @@ use Illuminate\Auth\Access\Response;
 
 class ProductPolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
+    public function viewAny(User $user)
     {
-        //
+        return $user->type === 'gold';
     }
 
     /**
@@ -48,19 +45,4 @@ class ProductPolicy
         //
     }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Product $product): bool
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Product $product): bool
-    {
-        //
-    }
 }

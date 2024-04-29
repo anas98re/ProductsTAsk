@@ -16,6 +16,7 @@ class Product extends Model
         'price',
         'slug',
         'is_active',
+        'user_id'
     ];
 
     public function user()
