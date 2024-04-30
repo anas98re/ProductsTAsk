@@ -10,7 +10,7 @@ interface EloquentRepositoryInterface {
 
     public function create(array $attributes) :Model;
 
-    public function update(int $id, array $attributes): bool;
+    public function update(array $attributes);
 
-    public function delete(int $id);
+    public function delete($column, $value);
 }

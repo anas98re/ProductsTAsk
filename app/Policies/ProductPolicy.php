@@ -13,12 +13,10 @@ class ProductPolicy
         return $user->type === 'gold';
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Product $product): bool
+
+    public function view(User $user, Product $product)
     {
-        //
+        return $product->user_id === $user->id;
     }
 
     /**
@@ -34,7 +32,7 @@ class ProductPolicy
      */
     public function update(User $user, Product $product): bool
     {
-        //
+        return $product->user_id === $user->id;
     }
 
     /**

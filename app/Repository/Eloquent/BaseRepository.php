@@ -24,19 +24,20 @@ class BaseRepository implements EloquentRepositoryInterface
         return $this->model->create($attributes);
     }
 
-    public function update(int $id, array $attributes): bool
+    public function update(array $attributes)
     {
-        return $this->model->find($id)->update($attributes);
+        return $this->model->update($attributes);
     }
 
-    public function delete(int $id)
+
+    public function delete($column, $value)
     {
-        return $this->model->find($id)->delete();
+        return $this->model->where($column, $value)->delete();
     }
 
-    public function where($x, $y)
+    public function where($column, $value)
     {
-        return $this->model->where($x, $y)->get();
+        return $this->model->where($column, $value)->get();
     }
 
     public function all()
