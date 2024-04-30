@@ -5,60 +5,49 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Services\JsonResponeService;
+use App\Services\UserService;
 
-class UserController extends Controller
+class UserController extends JsonResponeService
 {
-    /**
-     * Display a listing of the resource.
-     */
+    private $userService;
+    public function __construct(UserService $userService)
+    {
+        //Only the admin with the gold type can control functions for a user
+        $this->middleware(function ($request, $next) {
+            if (auth()->user()->type !== 'gold') {
+                return $this->sendForbiddenResponse('You are not authorized to access this resource.');
+            }
+            return $next($request);
+        })->only(['index', 'store', 'show', 'update', 'destroy']);
+
+        $this->userService = $userService;
+    }
+
     public function index()
     {
-        //
+        return $this->userService->getAllUsersService();
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreUserRequest $request)
     {
-        //
+        return $this->userService->addUserService($request);
     }
 
-    /**
-     * Display the specified resource.
-     */
+
     public function show(User $user)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(User $user)
-    {
-        //
-    }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateUserRequest $request, User $user)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(User $user)
     {
         //

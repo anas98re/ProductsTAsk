@@ -27,7 +27,7 @@ class ProductService extends JsonResponeService
             return $this->sendEmptyResponse('There are no products');
         }
 
-        return $this->sendResponse($data, 'All Products');
+        return $this->sendResponse(ProductResource::collection($data), 'All Products');
     }
 
     public function addProductsService($request)
