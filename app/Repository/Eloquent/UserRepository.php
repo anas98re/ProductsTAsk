@@ -13,5 +13,10 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         parent::__construct($model);
     }
 
+    public function deleteUser($id)
+    {
+        return $this->model->find($id)->delete();
+    }
+
 
 }

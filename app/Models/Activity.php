@@ -21,6 +21,5 @@ class Activity extends Model
         'source',
         'route',
         'ip',
-        'afterApprove'
     ];
 }

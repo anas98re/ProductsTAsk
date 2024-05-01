@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\Http\Resources\ProductPriceResource;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
+use App\Models\User;
 use App\Repository\Eloquent\ProductRepository;
 use App\Repository\Eloquent\RegisterRepository;
 use Illuminate\Support\Facades\DB;
@@ -78,5 +80,12 @@ class ProductService extends JsonResponeService
     public function deleteProductService($slug)
     {
         $this->ProductRepository->delete('slug', $slug);
+    }
+
+    //Show each type of user different product prices according to their type.
+    public function getPriceService($request, $product)
+    {
+        $users = User::all();
+        return $this->sendResponse(ProductPriceResource::collection($users), 'Product updated successfully.');
     }
 }

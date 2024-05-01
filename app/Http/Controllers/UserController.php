@@ -7,10 +7,11 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Services\JsonResponeService;
 use App\Services\UserService;
+use Illuminate\Http\Request;
 
 class UserController extends JsonResponeService
 {
-    private $userService;
+    public $userService;
     public function __construct(UserService $userService)
     {
         //Only the admin with the gold type can control functions for a user
@@ -36,20 +37,30 @@ class UserController extends JsonResponeService
     }
 
 
-    public function show(User $user)
+    public function show($id)
     {
-        //
+        return $this->userService->showUserService($id);
     }
 
 
-    public function update(UpdateUserRequest $request, User $user)
+    public function update(Request $request, $id)
     {
-        //
+        $user = $this->userService->UserRepository->find($id);
+        if (!$user) {
+            return $this->sendError('User not found!');
+        }
+        return $this->userService->updateUserService($request, $id);
     }
 
 
-    public function destroy(User $user)
+    public function destroy($id)
     {
-        //
+        $user = $this->userService->UserRepository->find($id);
+        if (!$user) {
+            return $this->sendError('User not found!');
+        }
+        return $this->userService->deleteUserService($id) ?
+            $this->sendSucssas('Product deleted successfully.') :
+            $this->sendError('There is a problem deleting');
     }
 }

@@ -33,6 +33,8 @@ class ProductController extends JsonResponeService
         return $this->productService->addProductsService($request);
     }
 
+    //Every user can only show the product they created
+    //And admin whose type is gold can show any product
     public function show($slug)
     {
         $product = $this->productService->ProductRepository->where('slug', $slug)->first();
@@ -46,6 +48,8 @@ class ProductController extends JsonResponeService
     }
 
 
+    //Every user can only update the product they created
+    //And admin whose type is gold can update any product
     public function update(Request $request, $slug)
     {
         $product = $this->productService->ProductRepository->where('slug', $slug)->first();
@@ -70,10 +74,16 @@ class ProductController extends JsonResponeService
         }
     }
 
+
+    //Every user can only delete the product they created
+    //And admin whose type is gold can delete any product
     public function destroy($slug)
     {
         $product = $this->productService->ProductRepository->where('slug', $slug)->first();
 
+        if (!$product){
+            return $this->sendError('Product not found!');
+        }
         //Only the admin whom we considered to be the gold type
         //or the owner of this product ($product->user_id === $user->id) can delete it
         if (auth()->user()->type == 'gold' || $this->canUserDeleteProduct($product)) {
@@ -92,5 +102,10 @@ class ProductController extends JsonResponeService
         } catch (AuthorizationException $e) {
             return false;
         }
+    }
+
+    public function getPrice(Request $request, Product $product)
+    {
+        return $this->productService->getPriceService($request, $product);
     }
 }

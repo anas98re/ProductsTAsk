@@ -16,27 +16,46 @@ trait Loggable
         $request = app(Request::class);
         $routeName = $request && $request->route() ? $request->route()->uri() : null;
         $ip = $request->ip();
-        $user = auth('sanctum')->user();
+        $user = auth()->user();
         $userName = $user ? $user->nameUser : null;
         $userId = $user ? $user->id_user : null;
 
+        static::creating(function ($model) use ($user, $routeName, $ip, $userName, $userId) {
+            Activity::create([
+                'model' => get_class($model),
+                'action' => 'created',
+                'changesData' => json_encode($model->getAttributes(), JSON_UNESCAPED_UNICODE),
+                'description' => get_class($model) . ' created by ' . $userName . ', using route: ' . $routeName . ' from IP: ' . $ip,
+                'user_id' => $userId,
+                'model_id' => $model->getKey(),
+                'edit_date' => Carbon::now('Asia/Riyadh')->toDateTimeString(),
+                'route' => $routeName,
+                'ip' => $ip
+            ]);
+        });
+
         static::updating(function ($model) use ($user, $routeName, $ip, $userName, $userId) {
             $originalAttributes = $model->getOriginal();
-
             $updatedAttributes = $model->getDirty();
 
-            // Filter the modified attributes
-            $modifiedAttributesBefore = array_intersect_key($originalAttributes, $updatedAttributes);
-            $modifiedAttributesAfter = array_intersect_key($updatedAttributes, $originalAttributes);
+            $modifiedAttributes = [];
+
+            foreach ($updatedAttributes as $attribute => $newValue) {
+                $oldValue = $originalAttributes[$attribute] ?? null;
+
+                if ($oldValue !== $newValue) {
+                    $modifiedAttributes[$attribute] = " ($oldValue) TO ($newValue)";
+                }
+            }
 
             Activity::create([
                 'model' => get_class($model),
                 'action' => 'updated',
-                'old_data' => json_encode($modifiedAttributesBefore, JSON_UNESCAPED_UNICODE),
-                'new_data' => json_encode($modifiedAttributesAfter, JSON_UNESCAPED_UNICODE),
+                'changesData' => json_encode($modifiedAttributes, JSON_UNESCAPED_UNICODE),
                 'description' => get_class($model) . ' updated by ' . $userName . ', using route: ' . $routeName . ' from IP: ' . $ip,
                 'user_id' => $userId,
                 'model_id' => $model->getKey(),
+                'edit_date' => Carbon::now('Asia/Riyadh')->toDateTimeString(),
                 'route' => $routeName,
                 'ip' => $ip
             ]);
